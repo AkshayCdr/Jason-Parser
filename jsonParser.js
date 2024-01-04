@@ -96,12 +96,23 @@ const arrayParser = (input) => {
     if (!withoutcomma) {
       break;
     }
+
+    if (whiteSpaceParser(value[1])) {
+      space = whiteSpaceParser(value[1]);
+      input = space[1];
+    }
+    //after comma no value then return null
+    if (withoutcomma[1] === "]") {
+      return null;
+    }
     input = withoutcomma[1];
   }
-  // console.log(input);
+  console.log(input.charAt(1));
   if (input.startsWith("]")) {
+    if (input.charAt(1) === "," || input.charAt(1) === "]") {
+      return null;
+    }
     return [arr, input.slice(1)];
-  } else {
-    return null;
   }
+  return null;
 };
