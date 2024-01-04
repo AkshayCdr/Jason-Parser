@@ -26,9 +26,14 @@ const whiteSpaceParser = (input) => {
 const stringParser = (input) => {
   if (!input.startsWith('"')) return null;
   let i = 1;
+  let arr = ["b", "f", "n", "r", "t", "u", "\\", "/", '"'];
   while (input[i] !== '"') {
     if (input[i] === "\\") {
-      i += 2;
+      if (arr.includes(input[i + 1])) {
+        i += 2;
+      } else {
+        return null;
+      }
     }
     i++;
   }
@@ -78,10 +83,10 @@ const arrayParser = (input) => {
       input = space[1];
     }
     let value = valueParser(input);
-    input = value[1];
     if (!value) {
       return null;
     }
+    input = value[1];
     arr.push(value[0]);
     if (whiteSpaceParser(value[1])) {
       space = whiteSpaceParser(value[1]);
