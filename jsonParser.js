@@ -11,7 +11,8 @@ const boolParser = (input) => {
 
 const numberParser = (input) => {
   // let regex = /[+-]*\d+\.?\d*[E|e]*[+-]*\d+/;
-  let regex = /[-+]?(-?\[0-9]+(\.\[0-9]*)?|\.-?\[0-9]+)([Ee][+-]?\[0-9]+)?/i;
+  // let regex = /[-+]?(-?\[0-9]+(\.\[0-9]*)?|\.-?\[0-9]+)([E|e][+-]?\[0-9]+)?/i;
+  let regex = /^[-+]?(\d+(\.\d*)?|\.\d+)([E|e][+-]?\d+)?/i;
   let result = input.match(regex);
   if (result) return [result[0], input.slice(result[0].length)];
   return null;
@@ -34,7 +35,7 @@ const stringParser = (input) => {
   let i = 1;
   while (input[i] !== '"') {
     if (input[i] === "\\") {
-      i = +2;
+      i += 2;
     }
     i++;
   }
