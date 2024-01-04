@@ -26,11 +26,14 @@ const whiteSpaceParser = (input) => {
 const stringParser = (input) => {
   if (!input.startsWith('"')) return null;
   let i = 1;
-  let arr = ["b", "f", "n", "r", "t", "u", "\\", "/", '"'];
+  let arr = ["b", "f", "n", "r", "t", "\\", "/", '"'];
+  let arr2 = ["u"];
   while (input[i] !== '"') {
     if (input[i] === "\\") {
       if (arr.includes(input[i + 1])) {
         i += 2;
+      } else if (arr2.includes(input[i + 1])) {
+        i += 4;
       } else {
         return null;
       }
