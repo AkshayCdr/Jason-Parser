@@ -10,8 +10,6 @@ const boolParser = (input) => {
 };
 
 const numberParser = (input) => {
-  // let regex = /[+-]*\d+\.?\d*[E|e]*[+-]*\d+/;
-  // let regex = /[-+]?(-?\[0-9]+(\.\[0-9]*)?|\.-?\[0-9]+)([E|e][+-]?\[0-9]+)?/i;
   let regex = /^[-+]?(\d+(\.\d*)?|\.\d+)([E|e][+-]?\d+)?/i;
   let result = input.match(regex);
   if (result) return [result[0], input.slice(result[0].length)];
@@ -19,15 +17,10 @@ const numberParser = (input) => {
 };
 
 const whiteSpaceParser = (input) => {
-  // let regx = /\s*/;
-  // let regx = /[\s\n\t\r]+/;
   let regx = /^[\s\n]/;
   let result = input.match(regx);
   if (result) return [null, input.slice(result[0].length)];
   return null;
-  // console.log(result);
-  // console.log(result[0].length);
-  // console.log(input.slice(result[0].length));
 };
 
 const stringParser = (input) => {
@@ -85,6 +78,7 @@ const arrayParser = (input) => {
       input = space[1];
     }
     let value = valueParser(input);
+    input = value[1];
     if (!value) {
       return null;
     }
@@ -95,11 +89,12 @@ const arrayParser = (input) => {
     }
     let withoutcomma = commaParser(value[1]);
     if (!withoutcomma) {
-      return null;
+      break;
     }
     input = withoutcomma[1];
   }
-  if (input === "]") {
+  // console.log(input);
+  if (input.startsWith("]")) {
     return [arr, input.slice(1)];
   } else {
     return null;
