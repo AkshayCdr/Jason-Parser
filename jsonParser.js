@@ -164,7 +164,6 @@ function objectParser(input) {
   if (input.startsWith("}")) return [obj, input.slice(1)];
   return null;
 }
-
 function main() {
   let i = 1;
   while (true) {
@@ -191,6 +190,7 @@ function main() {
       console.log(error);
     }
   }
+  console.log("\n");
   let j = 1;
   while (true) {
     try {
@@ -200,9 +200,10 @@ function main() {
 
       if (array || object) {
         let output = valueParser(input);
-        if (!output) {
-          console.log("failed");
+        if (!output || output[1]) {
+          console.log(`failed`);
         } else {
+          // console.log(output[1]);
           console.log(`${output} is fail${j}`);
         }
       } else {
