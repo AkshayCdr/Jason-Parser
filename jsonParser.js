@@ -1,3 +1,5 @@
+const fs = require("node:fs");
+
 const nullParser = (input) => {
   if (!input.startsWith("null")) return null;
   return [null, input.slice(4)];
@@ -19,7 +21,8 @@ function boolParser(input) {
 }
 
 const numberParser = (input) => {
-  let regex = /^[-+]?(\d+(\.\d*)?|\.\d+)([E|e][+-]?\d+)?/i;
+  // let regex = /^[-+]?(\d+(\.\d*)?|\.\d+)([E|e][+-]?\d+)?/i;
+  let regex = /^[-+]?([1-9]\d*|0)(\.\d*)?([Ee][+-]?\d+)?/;
   let result = input.match(regex);
   if (result) return [result[0], input.slice(result[0].length)];
   return null;
