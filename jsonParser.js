@@ -146,11 +146,7 @@ function objectParser(input) {
     if (!colon) return null;
 
     space = whiteSpaceParser(colon[1]);
-    if (space) {
-      value = space[1];
-    } else {
-      value = colon[1];
-    }
+    if (space) value = space[1];
 
     value = valueParser(value);
     if (!value) return null;
@@ -163,10 +159,7 @@ function objectParser(input) {
 
     let comma = commaParser(input);
     if (!comma) break;
-
-    space = whiteSpaceParser(comma[1]);
-    if (space) input = space[1];
-    else input = comma[1];
+    input = comma[1];
   }
   if (input.startsWith("}")) return [obj, input.slice(1)];
   return null;
