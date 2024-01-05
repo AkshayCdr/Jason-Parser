@@ -174,3 +174,59 @@ function objectParser(input) {
   if (input.startsWith("}")) return [obj, input.slice(1)];
   return null;
 }
+
+function main() {
+  let i = 1;
+  while (true) {
+    try {
+      let input = fs.readFileSync(`pass${i}.json`).toString().trim("");
+      let array = arrayParser(input);
+      let object = objectParser(input);
+      if (array || object) {
+        let output = valueParser(input);
+        // console.log(output);
+        if (output) {
+          console.log("working");
+        } else {
+          console.log("failed");
+        }
+      } else {
+        console.log("failed");
+      }
+      i++;
+      if (i === 7) {
+        break;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  let j = 1;
+  while (true) {
+    try {
+      let input = fs.readFileSync(`fail${j}.json`).toString().trim("");
+      let array = arrayParser(input);
+      let object = objectParser(input);
+
+      if (array || object) {
+        let output = valueParser(input);
+        if (!output) {
+          console.log("failed");
+        } else {
+          console.log(`${output} is fail${j}`);
+        }
+      } else {
+        console.log("failed");
+      }
+
+      j++;
+      if (j === 34) {
+        break;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+main();
