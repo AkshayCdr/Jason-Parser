@@ -3,11 +3,20 @@ const nullParser = (input) => {
   return [null, input.slice(4)];
 };
 
-const boolParser = (input) => {
-  if (input.startsWith("true")) return [true, input.slice(4)];
-  if (input.startsWith("false")) return [false, slice(5)];
+// const boolParser = (input) => {
+//   if (input.startsWith("true")) return [true, input.slice(4)];
+//   if (input.startsWith("false")) return [false, slice(5)];
+//   return null;
+// };
+
+function boolParser(input) {
+  if (input.startsWith("true")) {
+    return [true, input.slice(4)];
+  } else if (input.startsWith("false")) {
+    return [false, input.slice(5)];
+  }
   return null;
-};
+}
 
 const numberParser = (input) => {
   let regex = /^[-+]?(\d+(\.\d*)?|\.\d+)([E|e][+-]?\d+)?/i;
@@ -17,7 +26,7 @@ const numberParser = (input) => {
 };
 
 const whiteSpaceParser = (input) => {
-  let regx = /^[\s\n]/;
+  let regx = /^[\s\n\r\t]/;
   let result = input.match(regx);
   if (result) return [null, input.slice(result[0].length)];
   return null;
@@ -53,7 +62,7 @@ const commaParser = (input) => {
   return [input[0], input.slice(1)];
 };
 
-const valueParser = (input) => {
+function valueParser(input) {
   let parsers = [
     stringParser,
     numberParser,
@@ -69,9 +78,9 @@ const valueParser = (input) => {
     }
   }
   return null;
-};
+}
 
-const arrayParser = (input) => {
+function arrayParser(input) {
   if (!input.startsWith("[")) return null;
   let i = 1;
   let arr = [];
@@ -118,4 +127,49 @@ const arrayParser = (input) => {
     return [arr, input.slice(1)];
   }
   return null;
-};
+}
+
+function objectParser(input) {
+  if (!input.startsWith("{")) return null;
+  let obj = {};
+  input = input.slice(1);
+  while (true) {
+    let space = whiteSpaceParser(input);
+    if (space) input = space[1];
+
+    let result = stringParser(input);
+    if (!result) return null;
+    let [key, value] = result;
+
+    space = whiteSpaceParser(value);
+    if (space) value = space[1];
+
+    let colon = colonParser(value);
+    if (!colon) return null;
+
+    space = whiteSpaceParser(colon[1]);
+    if (space) {
+      value = space[1];
+    } else {
+      value = colon[1];
+    }
+
+    value = valueParser(value);
+    if (!value) return null;
+
+    obj[key] = value[0];
+
+    space = whiteSpaceParser(value[1]);
+    if (space) input = space[1];
+    else input = value[1];
+
+    let comma = commaParser(input);
+    if (!comma) break;
+
+    space = whiteSpaceParser(comma[1]);
+    if (space) input = space[1];
+    else input = comma[1];
+  }
+  if (input.startsWith("}")) return [obj, input.slice(1)];
+  return null;
+}
