@@ -83,50 +83,36 @@ function valueParser(input) {
 
 function arrayParser(input) {
   if (!input.startsWith("[")) return null;
-  let i = 1;
-  let arr = [];
   input = input.slice(1);
+  let arr = [];
   while (true) {
-    if (input === "]") {
-      break;
-    }
-    let space;
-    if (whiteSpaceParser(input)) {
-      space = whiteSpaceParser(input);
-      input = space[1];
-    }
-    let value = valueParser(input);
-    if (!value) {
-      return null;
-    }
-    input = value[1];
-    arr.push(value[0]);
-    if (whiteSpaceParser(value[1])) {
-      space = whiteSpaceParser(value[1]);
-      input = space[1];
-    }
-    let withoutcomma = commaParser(value[1]);
-    if (!withoutcomma) {
+    let space = whiteSpaceParser(input);
+    if (space) input = space[1];
+
+    if (input.startsWith("]")) {
       break;
     }
 
-    if (whiteSpaceParser(value[1])) {
-      space = whiteSpaceParser(value[1]);
-      input = space[1];
-    }
-    //after comma no value then return null
-    if (withoutcomma[1] === "]") {
+    let value = valueParser(input);
+    if (!value) return null;
+    arr.push(value[0]);
+
+    space = whiteSpaceParser(value[1]);
+    if (space) input = space[1];
+    else input = value[1];
+
+    let comma = commaParser(input);
+    if (!comma) break;
+
+    space = whiteSpaceParser(comma[1]);
+    if (space) input = space[1];
+    else input = comma[1];
+
+    if (input.startsWith("]")) {
       return null;
     }
-    input = withoutcomma[1];
   }
-  console.log(input.charAt(1));
-  if (input.startsWith("]")) {
-    if (input.charAt(1) === "," || input.charAt(1) === "]") {
-      return null;
-    }
-    return [arr, input.slice(1)];
-  }
+  if (input.startsWith("]")) return [arr, input.slice(1)];
   return null;
 }
 
