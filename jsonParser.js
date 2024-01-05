@@ -63,17 +63,18 @@ const commaParser = (input) => {
 };
 
 function valueParser(input) {
-  let parsers = [
+  const Jsonparsers = [
     stringParser,
     numberParser,
-    // objectParser,
+    objectParser,
     arrayParser,
     boolParser,
     nullParser,
   ];
-  for (let i of parsers) {
-    let result = i(input);
-    if (result) {
+
+  for (let Json of Jsonparsers) {
+    const result = Json(input);
+    if (result !== null) {
       return result;
     }
   }
