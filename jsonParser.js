@@ -32,25 +32,31 @@ const whiteSpaceParser = (input) => {
   return null;
 };
 
-const stringParser = (input) => {
+function stringParser(input) {
   if (!input.startsWith('"')) return null;
+  let unicodeRegex = /[\u0000-\uFFFF]/g;
+  let arr = ["b", "f", "n", "r", "t", "\\", "/", '"', "u"];
+  // let arr = ["b", "f", "r", "\\", "/", '"', "u"];
   let i = 1;
-  let arr = ["b", "f", "n", "r", "t", "\\", "/", '"'];
-  let arr2 = ["u"];
   while (input[i] !== '"') {
     if (input[i] === "\\") {
-      if (arr.includes(input[i + 1])) {
-        i += 2;
-      } else if (arr2.includes(input[i + 1])) {
-        i += 4;
-      } else {
+      if (!arr.includes(input[i + 1])) {
         return null;
       }
+      if (input[i + 1] === "u") {
+        if (!input.slice(i + 2).match(unicodeRegex)) {
+          return null;
+        }
+        i += 5;
+      } else {
+        i += 2;
+      }
+    } else {
+      i++;
     }
-    i++;
   }
   return [input.substring(1, i), input.slice(i + 1)];
-};
+}
 
 const colonParser = (input) => {
   if (!input.startsWith(":")) return null;
