@@ -173,17 +173,16 @@ function main() {
       let object = objectParser(input);
       if (array || object) {
         let output = valueParser(input);
-        // console.log(output);
         if (output) {
-          console.log("working");
+          console.log(`working file pass${i}`);
         } else {
-          console.log("failed");
+          console.log(`failed file pass${i}`);
         }
       } else {
-        console.log("failed");
+        console.log(`failed file pass${i}`);
       }
       i++;
-      if (i === 7) {
+      if (i === 9) {
         break;
       }
     } catch (error) {
@@ -201,15 +200,13 @@ function main() {
       if (array || object) {
         let output = valueParser(input);
         if (!output || output[1]) {
-          console.log(`failed`);
+          console.log(`failed file pass${j}`);
         } else {
-          // console.log(output[1]);
           console.log(`${output} is fail${j}`);
         }
       } else {
-        console.log("failed");
+        console.log(`failed file pass${j}`);
       }
-
       j++;
       if (j === 34) {
         break;
