@@ -42,6 +42,9 @@ function stringParser(input) {
   // let arr = ["b", "f", "r", "\\", "/", '"', "u"];
   let i = 1;
   while (input[i] !== '"') {
+    if (input[i] === "\n" || input[i] === "\t") {
+      return null;
+    }
     if (input[i] === "\\") {
       if (!arr.includes(input[i + 1])) {
         return null;
@@ -60,7 +63,6 @@ function stringParser(input) {
   }
   return [input.substring(1, i), input.slice(i + 1)];
 }
-
 const colonParser = (input) => {
   if (!input.startsWith(":")) return null;
   return [input[0], input.slice(1)];
