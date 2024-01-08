@@ -1,16 +1,8 @@
 const fs = require("node:fs");
-
 const nullParser = (input) => {
   if (!input.startsWith("null")) return null;
   return [null, input.slice(4)];
 };
-
-// const boolParser = (input) => {
-//   if (input.startsWith("true")) return [true, input.slice(4)];
-//   if (input.startsWith("false")) return [false, slice(5)];
-//   return null;
-// };
-
 function boolParser(input) {
   if (input.startsWith("true")) {
     return [true, input.slice(4)];
@@ -19,27 +11,22 @@ function boolParser(input) {
   }
   return null;
 }
-
 const numberParser = (input) => {
-  // let regex = /^[-+]?(\d+(\.\d*)?|\.\d+)([E|e][+-]?\d+)?/i;
   let regex = /^[-+]?([1-9]\d*|0)(\.\d*)?([Ee][+-]?\d+)?/;
   let result = input.match(regex);
   if (result) return [result[0], input.slice(result[0].length)];
   return null;
 };
-
 const whiteSpaceParser = (input) => {
   let regx = /^[\s\n\r\t]/;
   let result = input.match(regx);
   if (result) return [null, input.slice(result[0].length)];
   return null;
 };
-
 function stringParser(input) {
   if (!input.startsWith('"')) return null;
   let unicodeRegex = /[\u0000-\uFFFF]/g;
   let arr = ["b", "f", "n", "r", "t", "\\", "/", '"', "u"];
-  // let arr = ["b", "f", "r", "\\", "/", '"', "u"];
   let i = 1;
   while (input[i] !== '"') {
     if (input[i] === "\n" || input[i] === "\t") {
@@ -72,7 +59,6 @@ const commaParser = (input) => {
   if (!input.startsWith(",")) return null;
   return [input[0], input.slice(1)];
 };
-
 function valueParser(input) {
   const Jsonparsers = [
     stringParser,
@@ -91,7 +77,6 @@ function valueParser(input) {
   }
   return null;
 }
-
 function arrayParser(input) {
   if (!input.startsWith("[")) return null;
   input = input.slice(1);
@@ -99,26 +84,20 @@ function arrayParser(input) {
   while (true) {
     let space = whiteSpaceParser(input);
     if (space) input = space[1];
-
     if (input.startsWith("]")) {
       break;
     }
-
     let value = valueParser(input);
     if (!value) return null;
     arr.push(value[0]);
-
     space = whiteSpaceParser(value[1]);
     if (space) input = space[1];
     else input = value[1];
-
     let comma = commaParser(input);
     if (!comma) break;
-
     space = whiteSpaceParser(comma[1]);
     if (space) input = space[1];
     else input = comma[1];
-
     if (input.startsWith("]")) {
       return null;
     }
@@ -126,7 +105,6 @@ function arrayParser(input) {
   if (input.startsWith("]")) return [arr, input.slice(1)];
   return null;
 }
-
 function objectParser(input) {
   if (!input.startsWith("{")) return null;
   let obj = {};
@@ -134,29 +112,21 @@ function objectParser(input) {
   while (true) {
     let space = whiteSpaceParser(input);
     if (space) input = space[1];
-
     let result = stringParser(input);
     if (!result) return null;
     let [key, value] = result;
-
     space = whiteSpaceParser(value);
     if (space) value = space[1];
-
     let colon = colonParser(value);
     if (!colon) return null;
-
     space = whiteSpaceParser(colon[1]);
     if (space) value = space[1];
-
     value = valueParser(value);
     if (!value) return null;
-
     obj[key] = value[0];
-
     space = whiteSpaceParser(value[1]);
     if (space) input = space[1];
     else input = value[1];
-
     let comma = commaParser(input);
     if (!comma) break;
     input = comma[1];
@@ -216,5 +186,4 @@ function main() {
     }
   }
 }
-
 main();
